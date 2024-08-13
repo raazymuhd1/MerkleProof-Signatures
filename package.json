@@ -1,0 +1,26 @@
+{
+  "name": "merkleproof-signatures",
+  "version": "1.0.0",
+  "description": "**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+     "compile": "npx tsc -w",
+     "generate-tree": "node --watch ./merkle-result/generateTree.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ethers": "^6.13.2",
+    "keccak256": "^1.0.6",
+    "merkletreejs": "^0.4.0",
+    "typescript": "^5.5.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.2.0"
+  }
+}

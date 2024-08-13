@@ -1,66 +1,7 @@
-## Foundry
+## Using Merkle Tree for NFT Whitelist
+   `Merkle Tree` is hash based tree, where the top of the tree is called a hash root / merkle root. using merkle tree we can prove that our data (any kind of data) is in the tree.
+    **Some Use Cases**
+    - `Whitelist Users` - whitelisted users for minting NFT or claiming airdrop, we can make a merkle tree of users wallet and the amount of airdrop tobe claimed or the amount of NFT tobe claimed.
+    - `proving someone is actually in the group/club` - proving that someone is actually part of the group, by creating merkle tree of group users and we can prove it using merkle proof.
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
-
-Foundry consists of:
-
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
-
-## Documentation
-
-https://book.getfoundry.sh/
-
-## Usage
-
-### Build
-
-```shell
-$ forge build
-```
-
-### Test
-
-```shell
-$ forge test
-```
-
-### Format
-
-```shell
-$ forge fmt
-```
-
-### Gas Snapshots
-
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+  read this article to learn more about `Merkle Tree` [Merkle-Tree](https://dev.to/peterblockman/understand-merkle-tree-by-making-a-nft-minting-whitelist-1148)

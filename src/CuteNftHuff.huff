@@ -1,0 +1,14 @@
+// interfaces
+#define function name() public view returns(string)
+#define function decimals() public view returns(string)
+
+#define constant NAME_SLOT = FREE_STORAGE_POINTER()
+
+#define macro MAIN() = takes(0) returns(0) {
+    [NAME_SLOT] sload
+
+}
+
+#define macro TRANSFER() = takes(2) returns(0) {
+
+}
