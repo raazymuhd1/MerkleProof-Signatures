@@ -90,7 +90,7 @@ contract CuteNFT is ERC721 {
     constructor(string memory nftName,
     string memory nftSymbol, bytes32 merkleRoot_) ERC721(nftName, nftSymbol) {
         // _disableInitializers(); // this line tells to disable constructor from initialize any state variables
-        s_owner = owner_;
+        s_owner = msg.sender;
         i_merkleRoot= merkleRoot_;
     }
 
@@ -113,8 +113,8 @@ contract CuteNFT is ERC721 {
     
     ///////////////// Public & External Functions ////////////////////
 
-    function mintNFT(string memory tokenUri, bytes32[] proof, bytes32 leaf) public payable NotZeroAddress BalanceMoreThanZero IsWhitelisted {
-        bytes32 root = s_merkleRoot;
+    function mintNFT(string memory tokenUri, bytes32[] memory proof, bytes32 leaf) public payable NotZeroAddress BalanceMoreThanZero IsWhitelisted {
+        bytes32 root = i_merkleRoot;
         bool isUserVerified = MerkleProof.verify(proof, root, leaf);
         // CHECKS
         if(!isUserVerified) revert("you are not eligible for claiming NFT");

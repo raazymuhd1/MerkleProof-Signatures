@@ -19,3 +19,10 @@ In Ethereum, a private key is used to sign transactions, ensuring the authentici
 - ECDSA is used for signature generation and verification.
 - The digital signature (r, s, v) is a compact representation of the private key’s contribution to the signing process.
 - The signed transaction is broadcast to the Ethereum network, where it is verified by nodes using the corresponding public key and the ECDSA algorithm.
+
+## Account Abstractions
+ **`Account Abstractions`** allow us to sign transaction using anything like (email, github acc, etc)
+ 
+ **How account abstraction works**
+ - `user` send tx to `alt mempool`, `alt mempool` is responsible for sending user transactions into onchain  and also cover gas fees (it will revert if our contract didnt have any funds for fee). Off-chain `alt mempool` will send userOp into `on-chain` to `EntyPoints.sol` contract, where then `EntyPoints` will call our contract account.
+- we can also provides a `PayMaster` to cover our txs fee, `alt mempool` will use `PayMaster` to pay fees if we provided `PayMaster`
