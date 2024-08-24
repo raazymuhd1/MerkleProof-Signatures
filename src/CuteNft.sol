@@ -3,14 +3,18 @@ pragma solidity ^0.8.18;
 
 import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import { Strings } from "@openzeppelin/contracts/utils/Strings.sol";
-import { UUPSUpgradeable } from "@openzeppelin/upgradeable-contracts/proxy/utils/UUPSUpgradeable.sol";
-import { Initializable } from "@openzeppelin/contracts/proxy/utils/Initializable.sol";
-import { OwnableUpgradeable } from "@openzeppelin/upgradeable-contracts/access/OwnableUpgradeable.sol";
+import { MerkleProof } from "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
+import { ECDSA } from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+
+// import { UUPSUpgradeable } from "@openzeppelin/upgradeable-contracts/proxy/utils/UUPSUpgradeable.sol";
+// import { Initializable } from "@openzeppelin/contracts/proxy/utils/Initializable.sol";
+// import { OwnableUpgradeable } from "@openzeppelin/upgradeable-contracts/access/OwnableUpgradeable.sol";
 
 /**
  * @author Mohammed Raazy
  * @notice This is a simple single or NFT collections contract
  * @dev This code will be test it
+ * @dev ECDSA is a digital signature algorithm uses for generating digital *signatures from given private key, that later could be used to sign a *transaction hash.
  */
 
 contract CuteNFT is ERC721 {
@@ -26,12 +30,12 @@ contract CuteNFT is ERC721 {
     error NFT_NotWhitelisted();
     error NFT_AlreadyWhitelisted();
 
-    NftDetails private s_nft;
-
     uint256 private constant MINT_FEE = 0.001 ether;
+    NftDetails private s_nft;
     address[] private s_whitelists;
     uint256 private s_tokenCounter = 0;
     address private s_owner;
+    bytes32 private immutable i_merkleRoot;
 
     mapping(uint256 tokenId => string tokenUri) private s_tokenUri;
     mapping(address user => bool whitelisted) private s_isWhitelisted;
@@ -87,6 +91,7 @@ contract CuteNFT is ERC721 {
     string memory nftSymbol, bytes32 merkleRoot_) ERC721(nftName, nftSymbol) {
         // _disableInitializers(); // this line tells to disable constructor from initialize any state variables
         s_owner = owner_;
+        i_merkleRoot= merkleRoot_;
     }
 
     // function initialize(string memory nftName, string memory nftSymbol) public initializer {
@@ -108,7 +113,12 @@ contract CuteNFT is ERC721 {
     
     ///////////////// Public & External Functions ////////////////////
 
-    function mintNFT(string memory tokenUri) public payable NotZeroAddress BalanceMoreThanZero IsWhitelisted {
+    function mintNFT(string memory tokenUri, bytes32[] proof, bytes32 leaf) public payable NotZeroAddress BalanceMoreThanZero IsWhitelisted {
+        bytes32 root = s_merkleRoot;
+        bool isUserVerified = MerkleProof.verify(proof, root, leaf);
+        // CHECKS
+        if(!isUserVerified) revert("you are not eligible for claiming NFT");
+
         if(balanceOf(msg.sender) >= 2) {
             revert NFT_CanOnlyMintTwice();
         }
@@ -117,10 +127,13 @@ contract CuteNFT is ERC721 {
             revert NFT_MintFeeNeeded();
         }
 
+        // EFFECTS
         s_tokenUri[s_tokenCounter] = tokenUri;
+        s_tokenCounter += 1;
+
+        // INTERACTIONS
         _safeMint(msg.sender, s_tokenCounter, "");
         emit NFTMinted(tokenURI(s_tokenCounter), msg.sender);
-        s_tokenCounter += 1;
     }
 
     function withdrawMintFee(uint256 wdAmount) external payable OnlyOwner NotZeroAddress returns(bool) {
