@@ -7,11 +7,11 @@ import { CuteNFT } from "../src/CuteNft.sol";
 contract DeployCuteNFT is Script {
 
     CuteNFT cuteNft;
-    bytes merkleRoot = '0x635ba7d5269a9f0f2b4d5eb5aece16aae4809a307d987fa6206afb999fcc74c8';
     string nftName = "Cutiee";
     string nftSymbol = "CT";
 
     function run() public returns(CuteNFT) {
+        bytes32 merkleRoot = bytes32(0x635ba7d5269a9f0f2b4d5eb5aece16aae4809a307d987fa6206afb999fcc74c8);
         vm.broadcast();
         cuteNft = new CuteNFT(nftName, nftSymbol, merkleRoot);
 

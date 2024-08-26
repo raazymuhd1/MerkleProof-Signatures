@@ -103,7 +103,7 @@ contract CuteNFT is ERC721 {
     // }
 
     receive() external payable {
-        mintNFT(string.concat(_baseURI(), "QmSxqYRqvG5eSTZsKytVDx2JCQs1P3Tb2hBjPNDLkGv8rB/metadata1.json"));
+        // mintNFT(string.concat(_baseURI(), "QmSxqYRqvG5eSTZsKytVDx2JCQs1P3Tb2hBjPNDLkGv8rB/metadata1.json"));
     }
 
     //////////////// Internal & Private functions ///////////////////
