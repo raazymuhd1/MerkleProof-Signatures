@@ -113,19 +113,19 @@ contract CuteNFT is ERC721 {
     
     ///////////////// Public & External Functions ////////////////////
 
+    /**
+     @dev minting an NFT, only user that has been whitelisted can mint an NFT
+     @param tokenUri - an NFT URL pointing to the NFT image
+     @param proof - a merkle proof to proof that the user is exist in the merkle tree
+     @param leaf - the actual data (in this case user data { address, amount })
+     */
     function mintNFT(string memory tokenUri, bytes32[] memory proof, bytes32 leaf) public payable NotZeroAddress BalanceMoreThanZero IsWhitelisted {
         bytes32 root = i_merkleRoot;
         bool isUserVerified = MerkleProof.verify(proof, root, leaf);
         // CHECKS
         if(!isUserVerified) revert("you are not eligible for claiming NFT");
-
-        if(balanceOf(msg.sender) >= 2) {
-            revert NFT_CanOnlyMintTwice();
-        }
-
-        if(msg.value <= 0 || msg.value < MINT_FEE) {
-            revert NFT_MintFeeNeeded();
-        }
+        if(balanceOf(msg.sender) >= 2) revert NFT_CanOnlyMintTwice();
+        if(msg.value <= 0 || msg.value < MINT_FEE) revert NFT_MintFeeNeeded();
 
         // EFFECTS
         s_tokenUri[s_tokenCounter] = tokenUri;
@@ -136,6 +136,11 @@ contract CuteNFT is ERC721 {
         emit NFTMinted(tokenURI(s_tokenCounter), msg.sender);
     }
 
+    /**
+      @dev withdrawing fees from the contract
+      @param wdAmount - withdraw amount
+      @return bool - returns true if it success, else false if its failed
+     */
     function withdrawMintFee(uint256 wdAmount) external payable OnlyOwner NotZeroAddress returns(bool) {
         address owner = s_owner;
         
