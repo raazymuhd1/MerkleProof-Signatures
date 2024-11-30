@@ -21,6 +21,45 @@ In Ethereum, a private key is used to sign transactions, ensuring the authentici
 - The signed transaction is broadcast to the Ethereum network, where it is verified by nodes using the corresponding public key and the ECDSA algorithm.
 
 
+### Ethereum signatures standards
+  - `EIP-191`
+  - `EIP-712`
+
+ Manually check a valid signer of transaction: 
+
+ ```solidity
+     bytes32 MESSAGE_TYPEHASH = keccak256("SignMessage(string)");
+    bytes32 EIP712_TYPEHASH = keccak256("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)");
+
+    struct SignMessage {
+        string mssg;
+    }
+
+    struct EIP712Domain {
+        string name;
+        string version;
+        uint256 chainId;
+        address verifyingContract;
+    }
+
+
+    function getSigner(string memory mssg_, uint8 v, bytes32 r, bytes32 s) public returns(address signer) {
+          SignMessage memory signedMsg = SignMessage({ mssg: mssg_ });
+          EIP712Domain memory eip_separator = EIP712Domain({ name: "EIP", version: "1", chainId: 1, verifyingContract: address(this) });
+          bytes1 eipPrefix = bytes1(0x19);
+          bytes1 eipVersion = bytes1(0x01);
+
+          bytes32 hashedMsg = keccak256(abi.encode(MESSAGE_TYPEHASH, signedMsg));
+          bytes32 domain_separator = keccak256(abi.encode(EIP712_TYPEHASH, eip_separator));
+
+        //   (eipPrefix, eipVersion, version specific data, data to sign) EIP-191 signature standards
+          bytes32 digest = keccak256(abi.encodePacked(eipPrefix, eipVersion, domain_separator, hashedMsg));
+
+         address signer = ecrecover(digest, v, r, s);
+    }     
+ ```
+
+
 ## Merkle Tree
   A `Merkle tree` is a data structure used in cryptography and computer science to efficiently verify the integrity and authenticity of large datasets. It’s a binary tree-like structure where each node represents a hash value, and the tree is constructed by recursively hashing pairs of nodes until the root node is reached. It also being used in blockchain to encrypt its data tobe more secure.
 

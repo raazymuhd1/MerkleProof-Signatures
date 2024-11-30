@@ -22,8 +22,10 @@ const whitelisters = [
     }
 ];
 const generatingMerkleProof = () => {
+    // leaf nodes
     const leaves = whitelisters.map(leaf => ethers_1.ethers.solidityPackedKeccak256(['string', 'uint'], [leaf.user, leaf.amount]));
     const tree = new merkletreejs_1.MerkleTree(leaves, keccak256_1.default, { sort: true });
+    // root hash / merkle root
     const merkleRoot = tree.getHexRoot();
     const merkleProof = leaves.map(leaf => tree.getHexProof(leaf));
     fs_1.default.writeFileSync("merkleProof.txt", JSON.stringify(merkleProof));
