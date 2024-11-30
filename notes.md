@@ -44,6 +44,25 @@ In Ethereum, a private key is used to sign transactions, ensuring the authentici
 
 
     function getSigner(string memory mssg_, uint8 v, bytes32 r, bytes32 s) public returns(address signer) {
+
+          // 3 types of byte version / EIP Version
+        //   0x00 - intented validator (address of the signer/validator)
+        // 0x01 - structured data
+        // 0x45 - personal sign message
+
+        // EIP-191 SIGNATURES STANDARD
+        bytes1 eip191Prefix = bytes1(0x19);
+        bytes1 eip191Version = bytes1(0x00); // intented validator
+        address intendedValidatorAddr = address(this);
+        bytes32 message = bytes32("ANY MESSAGE"); // message or data could be in any type
+
+        bytes32 hashedMessage = keccak256(abi.encodePacked(eip191Prefix, eip191Version, intendedValidatorAddr, message));
+
+        address signerEip191 = ecrecover(hashedMessage, v, r, s);
+
+        //   (eipPrefix, eipVersion, version specific data, data to sign) EIP-191 signature standards
+
+        //   EIP-712 SIGNATURES STANDARD
           SignMessage memory signedMsg = SignMessage({ mssg: mssg_ });
           EIP712Domain memory eip_separator = EIP712Domain({ name: "EIP", version: "1", chainId: 1, verifyingContract: address(this) });
           bytes1 eipPrefix = bytes1(0x19);
@@ -52,7 +71,8 @@ In Ethereum, a private key is used to sign transactions, ensuring the authentici
           bytes32 hashedMsg = keccak256(abi.encode(MESSAGE_TYPEHASH, signedMsg));
           bytes32 domain_separator = keccak256(abi.encode(EIP712_TYPEHASH, eip_separator));
 
-        //   (eipPrefix, eipVersion, version specific data, data to sign) EIP-191 signature standards
+
+        //   (eipPrefix, eipVersion, structured data, data to sign) EIP-712 signature standards
           bytes32 digest = keccak256(abi.encodePacked(eipPrefix, eipVersion, domain_separator, hashedMsg));
 
          address signer = ecrecover(digest, v, r, s);
