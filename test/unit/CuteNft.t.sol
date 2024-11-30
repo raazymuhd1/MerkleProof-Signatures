@@ -8,6 +8,7 @@ contract CuteNFTTest is BaseTest {
 
     function test_mintNft() public {
          console.log("nft minted");
+         console.log(address(cuteNft));
     }
 
 

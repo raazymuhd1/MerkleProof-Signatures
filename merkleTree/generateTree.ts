@@ -21,8 +21,10 @@ const whitelisters: Whitelisters[] = [
 
 
 const generatingMerkleProof = () => {
+    // leaf nodes
     const leaves = whitelisters.map(leaf => ethers.solidityPackedKeccak256(['string', 'uint'], [leaf.user, leaf.amount] ))
     const tree = new MerkleTree(leaves, keccak256, { sort: true })
+    // root hash / merkle root
     const merkleRoot = tree.getHexRoot()
     const merkleProof = leaves.map(leaf => tree.getHexProof(leaf))
 

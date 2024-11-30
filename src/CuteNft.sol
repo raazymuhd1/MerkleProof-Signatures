@@ -43,7 +43,6 @@ contract CuteNFT is ERC721 {
     ///////////////// EVENTS ///////////////////
     event NFTMinted(string indexed tokenUri, address indexed minter);
     event WithdrawSuccess(address indexed owner, uint256 amount);
-    event Whitelisted(address[] indexed whitelisters);
 
     struct NftDetails {
         string tokenUri;
